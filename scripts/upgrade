@@ -19,7 +19,7 @@ app=rainloop
 	# the old version is not deleted... the new version is in a new path
 
 	# Use of latest community edition
-	sudo unzip -q ../sources/rainloop-community.zip -d $rainloop_path/
+	sudo unzip -q -o ../sources/rainloop-community.zip -d $rainloop_path/
 
 	# Update patch to auto load version
 	sudo cp ../sources/patch/index_auto_version.php $rainloop_path/index.php
