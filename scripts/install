@@ -121,7 +121,9 @@ CHECK_DOMAINPATH
 
 # Install PGPback by chtixof to allow users to backup/restore their PGP private keys on the server
 	sudo cp -rf ../sources/pgpback        	  $final_path/.
-
+	mkdir /var/www/rainloop/pgpback/keys
+	sudo chown -R www-data: /var/www/rainloop/pgpback/keys
+	
 # Set permissions to rainloop directory
 	sudo find $final_path/. -type d -exec chmod 755 {} \;
 	sudo find $final_path/. -type f -exec chmod 644 {} \;
@@ -146,6 +148,7 @@ CHECK_DOMAINPATH
 	sudo sed -i "s@NAMETOCHANGE@$app@g" $finalphpconf
 	sudo chown root:                    $finalphpconf
 	sudo chmod 644                      $finalphpconf
+	
 
 # Make app public if necessary
 	ynh_app_setting_set "$app" is_public "$is_public"
