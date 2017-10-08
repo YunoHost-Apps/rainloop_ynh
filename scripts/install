@@ -41,9 +41,9 @@ CHECK_DOMAINPATH
 
 	rainloop_path=${final_path}/app
 
-	sudo rm -rf $final_path
-	sudo mkdir -p $final_path
-	sudo mkdir -p $rainloop_path
+	sudo rm -rf -- $final_path
+	sudo mkdir -p -- $final_path
+	sudo mkdir -p -- $rainloop_path
 
 	# Download sources and keys
 	sudo wget -q https://github.com/RainLoop/rainloop-webmail/releases/download/v${rainloop_version}/rainloop-community-${rainloop_version}.zip
@@ -57,21 +57,21 @@ CHECK_DOMAINPATH
 	sudo unzip -qq rainloop-community-${rainloop_version}.zip -d $rainloop_path/
 
 	# Install plugins
-	sudo mkdir -p $rainloop_path/data/_data_/_default_/plugins
-	sudo cp -rf ../sources/plugins/auto-domain-grab $rainloop_path/data/_data_/_default_/plugins/.
-	sudo cp -rf ../sources/plugins/ynh-login-mapping $rainloop_path/data/_data_/_default_/plugins/.
-	sudo cp -rf ../sources/plugins/ynh-ldap-suggestions $rainloop_path/data/_data_/_default_/plugins/.
+	sudo mkdir -p -- $rainloop_path/data/_data_/_default_/plugins
+	sudo cp -rf -- ../sources/plugins/auto-domain-grab $rainloop_path/data/_data_/_default_/plugins/.
+	sudo cp -rf -- ../sources/plugins/ynh-login-mapping $rainloop_path/data/_data_/_default_/plugins/.
+	sudo cp -rf -- ../sources/plugins/ynh-ldap-suggestions $rainloop_path/data/_data_/_default_/plugins/.
 
 # Autoconfig
-	sudo mkdir -p $rainloop_path/data/_data_/_default_/configs/
+	sudo mkdir -p -- $rainloop_path/data/_data_/_default_/configs/
 	application_file=$rainloop_path/data/_data_/_default_/configs/application.ini
 
 	# Set lang => define from install manifest
 	case "$lang" in
-        Francais)
+        fr|French|Francais)
             lang="fr"
             ;;
-        English)
+        en|English|Anglais)
             lang="en"
             ;;
         *)
@@ -100,17 +100,17 @@ CHECK_DOMAINPATH
 	ynh_app_setting_set "$app" password "$password"
 
 # Add default domain configs by looping through all the domains already added
-	sudo mkdir -p $rainloop_path/data/_data_/_default_/domains/
+	sudo mkdir -p -- $rainloop_path/data/_data_/_default_/domains/
 	# get list of ldap domains
 	alldomains=`ldapsearch -LLL -x -b ou=domains,dc=yunohost,dc=org -s one "objectclass=top" virtualdomain | grep -v "dn:" | sed "s/virtualdomain://" `
 	for ldomain in $alldomains ; do
-		sudo cp ../conf/data/domains/domain.tld.ini $rainloop_path/data/_data_/_default_/domains/$ldomain.ini
+		sudo cp -- ../conf/data/domains/domain.tld.ini $rainloop_path/data/_data_/_default_/domains/$ldomain.ini
 	done
 	# Add wildcard domain for auto-grab
-	sudo cp ../conf/data/domains/default.ini $rainloop_path/data/_data_/_default_/domains/default.ini
+	sudo cp -- ../conf/data/domains/default.ini $rainloop_path/data/_data_/_default_/domains/default.ini
 
 # install SSO - at the moment the index is the SSO and rainloop is installed in /app
-	sudo cp ../sources/sso/sso.php        			$final_path/index.php
+	sudo cp -- ../sources/sso/sso.php             		$final_path/index.php
 	sudo sed -i "s@domain.tld@$domain@g"  			$final_path/index.php
 	sudo sed -i "s@ALIASTOCHANGE@$final_path@g"  	$final_path/index.php
 	if [ $path = "/" ]; then
@@ -120,7 +120,7 @@ CHECK_DOMAINPATH
 	fi
 
 # Install PGPback by chtixof to allow users to backup/restore their PGP private keys on the server
-	sudo cp -rf ../sources/pgpback        	  $final_path/.
+	sudo cp -rf -- ../sources/pgpback        	$final_path/.
 
 # Set permissions to rainloop directory
 	sudo find $final_path/. -type d -exec chmod 755 {} \;
@@ -129,20 +129,20 @@ CHECK_DOMAINPATH
 
 # Install Nginx configuration file
 	nginx_conf_file=/etc/nginx/conf.d/$domain.d/$app.conf
-	sudo cp ../conf/nginx.conf $nginx_conf_file
+	sudo cp -- ../conf/nginx.conf $nginx_conf_file
 	if [ $path = "/" ]; then
 	    sudo sed -i "s@ROOTTOCHANGE@@g"          $nginx_conf_file
 	else
 	    sudo sed -i "s@ROOTTOCHANGE@$path@g"     $nginx_conf_file
 	fi
-    sudo sed -i "s@PATHTOCHANGE@$path@g"         $nginx_conf_file
+	sudo sed -i "s@PATHTOCHANGE@$path@g"         $nginx_conf_file
 	sudo sed -i "s@ALIASTOCHANGE@$final_path/@g" $nginx_conf_file
 	sudo sed -i "s@NAMETOCHANGE@$app@g"          $nginx_conf_file
 	sudo chown root:                             $nginx_conf_file
 	sudo chmod 644                               $nginx_conf_file
 
 	finalphpconf=/etc/php5/fpm/pool.d/$app.conf
-	sudo cp ../conf/php-fpm.conf        $finalphpconf
+	sudo cp -- ../conf/php-fpm.conf     $finalphpconf
 	sudo sed -i "s@NAMETOCHANGE@$app@g" $finalphpconf
 	sudo chown root:                    $finalphpconf
 	sudo chmod 644                      $finalphpconf
