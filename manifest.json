@@ -6,7 +6,7 @@
         "en": "Lightweight multi-account webmail",
         "fr": "Webmail léger multi-comptes"
     },
-    "url": "http://rainloop.net/",
+    "url": "https://www.rainloop.net/",
     "license": "AGPL-3.0",
     "maintainer": {
         "name": "scith, Djip007, polytan02"
@@ -45,7 +45,7 @@
                "name": "is_public",
                 "ask": {
                     "en": "Is it a public application?",
-                    "fr": "Est-ce une page publique ?"
+                    "fr": "Est-ce une application publique ?"
                 },
                 "choices": ["Yes", "No"],
                 "default": "No"
