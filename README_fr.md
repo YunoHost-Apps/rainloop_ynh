@@ -13,14 +13,6 @@ Rainloop est un webmail simple et léger.
 
 **Version incluse:** 1.12.1
 
-## Captures d'écran
-
-![](Lien vers une capture d'écran pour cette application)
-
-## Démo
-
-* [Démo officielle](Lien vers un site de démonstration pour cette application)
-
 ## Configuration
 
 Pour le configurer après l'installation, veuillez vous rendre sur http://DOMAIN.TLD/rainloop/app/?admin 
@@ -41,15 +33,13 @@ Pour mettre à jour rainloop lorsqu'une nouvelle version est disponible, lancez 
 
 ## Documentation
 
- * Documentation officielle: Lien vers la documentation officielle de cette application
- * Documentation YunoHost: Si une documentation spécifique est nécessaire, n'hésitez pas à contribuer.
+ * Documentation officielle: https://www.rainloop.net/docs/
 
 ## Caractéristiques spécifiques YunoHost
 
 #### Support multi-utilisateurs
 
-L'authentification LDAP et HTTP est-elle prise en charge?
-L'application peut-elle être utilisée par plusieurs utilisateurs?
+L'authentification LDAP et HTTP sont prises en charge.
 
 #### Supported architectures
 
@@ -59,14 +49,7 @@ L'application peut-elle être utilisée par plusieurs utilisateurs?
 
 ## Limitations
 
-* Limitations connues.
-
-## Informations additionnelles
-
-* Autres informations à ajouter sur cette application
-
-**Plus d'informations sur la page de documentation:**  
-https://yunohost.org/packaging_apps
+* Aucune limitations connues.
 
 ## Links
 
