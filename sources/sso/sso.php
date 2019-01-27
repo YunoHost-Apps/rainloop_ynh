@@ -17,6 +17,8 @@ else
 	echo '[105] Missing version directory';
 	exit(105);
 }
+$_ENV['RAINLOOP_INCLUDE_AS_API'] = true;
+
 // Retrieve email and password
 if (isset($_SERVER['HTTP_EMAIL']) && isset($_SERVER['PHP_AUTH_PW'])) {
 	$email = $_SERVER['HTTP_EMAIL'];
