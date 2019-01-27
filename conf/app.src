@@ -1,0 +1,6 @@
+SOURCE_URL=https://github.com/RainLoop/rainloop-webmail/releases/download/v1.12.1/rainloop-community-1.12.1.zip
+SOURCE_SUM=5d7f99d0e145d22617de8c17e43f34842245d5570662f97f4352487671df811b
+SOURCE_SUM_PRG=sha256sum
+SOURCE_FORMAT=tar.gz
+SOURCE_IN_SUBDIR=false
+SOURCE_FILENAME=

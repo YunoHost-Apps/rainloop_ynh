@@ -6,10 +6,14 @@
         "en": "Lightweight multi-account webmail",
         "fr": "Webmail léger multi-comptes"
     },
+    "version": "1.12.1~ynh1",
     "url": "http://rainloop.net/",
     "license": "AGPL-3.0",
     "maintainer": {
         "name": "scith, Djip007, polytan02"
+    },
+    "requirements": {
+        "yunohost": ">= 2.7.14"
     },
     "multi_instance": true,
     "services": [
@@ -17,9 +21,6 @@
         "php5-fpm",
         "mysql"
     ],
-    "requirements": {
-        "yunohost": ">= 2.4.0"
-     },
     "arguments": {
         "install" : [
             {
@@ -41,24 +42,38 @@
                 "example": "/rainloop",
                 "default": "/rainloop"
             },
-	    {
-               "name": "is_public",
+            {
+                "name": "is_public",
+                "type": "boolean",
                 "ask": {
                     "en": "Is it a public application?",
-                    "fr": "Est-ce une page publique ?"
+                    "fr": "Est-ce une application publique ?"
                 },
-                "choices": ["Yes", "No"],
-                "default": "No"
-	    },
-	    {
+                "default": true
+            },
+            {
+                "name": "language",
+                "ask": {
+                    "en": "Choose the application language",
+                    "fr": "Choisissez la langue de l'application"
+                },
+                "choices": ["fr", "en"],
+                "default": "fr"
+            },
+            {
                 "name": "password",
                 "type": "password",
                 "ask": {
-                    "en": "Choose a strong password for the 'admin' user",
-                    "fr": "Choisissez un mot de passe fort pour l'administrateur 'admin'"
-                }
-	    },
-	    {
+                    "en": "Set the administrator password",
+                    "fr": "Définissez le mot de passe administrateur"
+                },
+                "help": {
+                    "en": "Use the help field to add an information for the admin about this question.",
+                    "fr": "Utilisez le champ aide pour ajouter une information à l'intention de l'administrateur à propos de cette question."
+                },
+                "example": "Choose a password"
+            },
+	        {
                "name": "ldap",
                 "ask": {
                     "en": "Do you want to add YunoHost users to the recipients suggestions?",
@@ -66,16 +81,7 @@
                 },
                 "choices": ["Yes", "No"],
                 "default": "Yes"
-	    },
-	    {
-               "name": "lang",
-                "ask": {
-                    "en": "Select default language",
-                    "fr": "Definir la langue par defaut"
-                },
-                "choices": ["English", "Francais"],
-                "default": "English"
-	    }
+	        }
         ]
     }
 }
