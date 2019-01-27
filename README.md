@@ -4,7 +4,6 @@
 [![Install rainloop with YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=rainloop)
 
 *[Lire ce readme en français.](./README_fr.md)*
-*[Read this readme in english.](./README.md)* 
 
 > *This package allow you to install rainloop quickly and simply on a YunoHost server.  
 If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to know how to install and enjoy it.*
