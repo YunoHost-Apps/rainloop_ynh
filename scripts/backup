@@ -1,31 +1,78 @@
 #!/bin/bash
 
-# Exit on command errors and treat unset variables as an error
-	set -eu
-	app=$YNH_APP_INSTANCE_NAME
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-# Source app helpers
-	source /usr/share/yunohost/helpers
+source ../settings/scripts/_common.sh
+source /usr/share/yunohost/helpers
 
-# Retrieve app settings
-	domain=$(ynh_app_setting_get "$app" domain)
-	path=$(ynh_app_setting_get "$app" path)
-	dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
+#=================================================
+# MANAGE SCRIPT FAILURE
+#=================================================
 
-# Copy the app files
-	DESTDIR="/var/www/$app"
-	ynh_backup "$DESTDIR" "sources"
+ynh_clean_setup () {
+	### Remove this function if there's nothing to clean before calling the remove script.
+	true
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
 
-# Copy the conf files
-	ynh_backup "/etc/nginx/conf.d/${domain}.d/${app}.conf" "nginx.conf"
+#=================================================
+# LOAD SETTINGS
+#=================================================
 
-# Copy dedicated php-fpm process to backup folder
-        ynh_backup "/etc/php5/fpm/pool.d/${app}.conf" "php-fpm.conf"
+app=$YNH_APP_INSTANCE_NAME
 
-# Set app specific variables
-	dbname=$app
-	dbuser=$app
+final_path=$(ynh_app_setting_get $app final_path)
+domain=$(ynh_app_setting_get $app domain)
+db_name=$(ynh_app_setting_get $app db_name)
 
-# Dump the database
-	mysqldump -u "$dbuser" -p"$dbpass" --no-create-db "$dbname" > ./db.sql
-	ynh_backup "db.sql" "dump.sql"
+#=================================================
+# STANDARD BACKUP STEPS
+#=================================================
+# BACKUP THE APP MAIN DIR
+#=================================================
+
+ynh_backup "$final_path"
+
+#=================================================
+# BACKUP THE NGINX CONFIGURATION
+#=================================================
+
+ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
+
+#=================================================
+# BACKUP THE PHP-FPM CONFIGURATION
+#=================================================
+
+ynh_backup "/etc/php5/fpm/pool.d/$app.conf"
+
+#=================================================
+# BACKUP THE MYSQL DATABASE
+#=================================================
+
+ynh_mysql_dump_db "$db_name" > db.sql
+
+#=================================================
+# SPECIFIC BACKUP
+#=================================================
+# BACKUP LOGROTATE
+#=================================================
+
+#ynh_backup "/etc/logrotate.d/$app"
+
+#=================================================
+# BACKUP SYSTEMD
+#=================================================
+
+#ynh_backup "/etc/systemd/system/$app.service"
+
+#=================================================
+# BACKUP A CRON FILE
+#=================================================
+
+#ynh_backup "/etc/cron.d/$app"
+

@@ -1,105 +1,189 @@
 #!/bin/bash
-	app=$YNH_APP_INSTANCE_NAME
-	rainloop_version=$(cat ../sources/rainloop_version)
 
-# Source app helpers
-	source /usr/share/yunohost/helpers
-	source .fonctions
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-# Backup the current version of the app, restore it if the upgrade fails
-# Check if old backup exists
-        if sudo yunohost backup list | grep -q $app-before-upgrade > /dev/null 2>&1;
-        then
-                sudo yunohost backup delete $app-before-upgrade
-        else
-                echo "no old backup to delete"
-        fi
-	sudo yunohost backup create --ignore-hooks --apps $app --name $app-before-upgrade --quiet
-	EXIT_PROPERLY () {
-		trap '' ERR
-		set +eu
-		sudo yunohost backup restore --ignore-hooks $app-before-upgrade --apps $app --force --quiet	# Restore the backup if upgrade failed
-		ynh_die "Upgrade failed. The app was restored to the way it was before the failed upgrade."
-	}
-	set -eu
-	trap EXIT_PROPERLY ERR
+source _common.sh
+source /usr/share/yunohost/helpers
 
-# Retrieve arguments
-	domain=$(ynh_app_setting_get "$app" domain)
-	path=$(ynh_app_setting_get "$app" path)
-	is_public=$(ynh_app_setting_get "$app" is_public)
-	password=$(ynh_app_setting_get "$app" password)
-	ldap=$(ynh_app_setting_get "$app" ldap)
-	language=$(ynh_app_setting_get "$app" language)
-	dp_pwd=$(ynh_app_setting_get "$app" mysqlpwd)
-	db_user=$app
-	plugins=$(ynh_app_setting_get "$app" plugins)
+#=================================================
+# LOAD SETTINGS
+#=================================================
 
-# Correct path using .fonctions
-CHECK_PATH
+app=$YNH_APP_INSTANCE_NAME
 
-# no update for db now...
+domain=$(ynh_app_setting_get $app domain)
+path_url=$(ynh_app_setting_get $app path)
+#admin=$(ynh_app_setting_get $app admin)
+is_public=$(ynh_app_setting_get $app is_public)
+final_path=$(ynh_app_setting_get $app final_path)
+language=$(ynh_app_setting_get $app language)
+db_name=$(ynh_app_setting_get $app db_name)
+password=$(ynh_app_setting_get "$app" password)
+ldap=$(ynh_app_setting_get "$app" ldap)
+plugins=$(ynh_app_setting_get "$app" plugins)
 
-# Copy the new sources
+lang=$(ynh_app_setting_get $app lang)
+language=$lang
+ynh_app_setting_set $app language $language
+
+rainloop_path=${final_path}/app
+
+#=================================================
+# ENSURE DOWNWARD COMPATIBILITY
+#=================================================
+
+# Fix is_public as a boolean value
+if [ "$is_public" = "Yes" ]; then
+	ynh_app_setting_set $app is_public 1
+	is_public=1
+elif [ "$is_public" = "No" ]; then
+	ynh_app_setting_set $app is_public 0
+	is_public=0
+fi
+
+# If db_name doesn't exist, create it
+if [ -z $db_name ]; then
+	db_name=$(ynh_sanitize_dbid $app)
+	ynh_app_setting_set $app db_name $db_name
+fi
+
+# If final_path doesn't exist, create it
+if [ -z $final_path ]; then
 	final_path=/var/www/$app
-	final_path=${final_path}/app
-	sudo rm -rf $final_path/rainloop		# Remove the previous Rainloop files except data
+	ynh_app_setting_set $app final_path $final_path
+fi
 
-	# Download sources and keys
-	sudo wget -q https://github.com/RainLoop/rainloop-webmail/releases/download/v${rainloop_version}/rainloop-community-${rainloop_version}.zip
-	sudo wget -q https://github.com/RainLoop/rainloop-webmail/releases/download/v${rainloop_version}/rainloop-community-${rainloop_version}.zip.asc
-	sudo wget -q https://repository.rainloop.net/RainLoop.asc
-	# Verify the integrity of sources
-	sudo gpg --import --quiet RainLoop.asc
-	sudo gpg --verify --quiet rainloop-community-${rainloop_version}.zip.asc rainloop-community-${rainloop_version}.zip
-	sudo gpg --batch --delete-key --yes Rainloop
-	# Unzip and overwrite
-	sudo unzip -qq -o rainloop-community-${rainloop_version}.zip -d $final_path/
+#=================================================
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+#=================================================
 
-	# Update ynh plugins:
-	sudo mkdir -p $final_path/data/_data_/_default_/plugins
-	sudo cp -rf ../sources/plugins/auto-domain-grab $final_path/data/_data_/_default_/plugins/.
-	sudo cp -rf ../sources/plugins/ynh-login-mapping $final_path/data/_data_/_default_/plugins/.
-	sudo cp -rf ../sources/plugins/ynh-ldap-suggestions $final_path/data/_data_/_default_/plugins/.
+# Backup the current version of the app
+ynh_backup_before_upgrade
+ynh_clean_setup () {
+	# restore it if the upgrade fails
+	ynh_restore_upgradebackup
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
+# CHECK THE PATH
+#=================================================
+
+# Normalize the URL path syntax
+path_url=$(ynh_normalize_url_path $path_url)
+
+#=================================================
+# STANDARD UPGRADE STEPS
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source "$rainloop_path"
+
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+
+# Create a dedicated nginx config
+ynh_add_nginx_config
+
+#=================================================
+# UPGRADE DEPENDENCIES
+#=================================================
+
+#ynh_install_app_dependencies deb1 deb2
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+
+# Create a dedicated user (if not existing)
+#ynh_system_user_create $app
+
+#=================================================
+# PHP-FPM CONFIGURATION
+#=================================================
+
+# Create a dedicated php-fpm config
+ynh_add_fpm_config
+
+#=================================================
+# SPECIFIC UPGRADE
+#=================================================
+# ...
+#=================================================
+
+application_file=$rainloop_path/data/_data_/_default_/configs/application.ini
+
+# Update ynh plugins:
+	sudo mkdir -p $rainloop_path/data/_data_/_default_/plugins
+	sudo cp -rf ../sources/plugins/auto-domain-grab $rainloop_path/data/_data_/_default_/plugins/.
+	sudo cp -rf ../sources/plugins/ynh-login-mapping $rainloop_path/data/_data_/_default_/plugins/.
+	sudo cp -rf ../sources/plugins/ynh-ldap-suggestions $rainloop_path/data/_data_/_default_/plugins/.
 
 # update SSO
 	sudo cp ../sources/sso/sso.php        			$final_path/index.php
-	sudo sed -i "s@domain.tld@$domain@g"  			$final_path/index.php
-	sudo sed -i "s@ALIASTOCHANGE@$final_path@g"  	$final_path/index.php
-	if [ $path = "/" ]; then
-	    sudo sed -i "s@ROOTTOCHANGE@@g"          	$final_path/index.php
-	else
-	    sudo sed -i "s@ROOTTOCHANGE@$path@g"     	$final_path/index.php
-	fi
+
+	ynh_replace_string "__URL__" $domain$path_url $final_path/index.php
+	ynh_replace_string "__FINAL_PATH__" $final_path $final_path/index.php
+
 
 # Install PGPback by chtixof to allow users to backup/restore their PGP private keys on the server
 	sudo cp -rf ../sources/pgpback        	  $final_path/.
 
-# Set permissions to rainloop directory
-	sudo find $final_path/. -type d -exec chmod 755 {} \;
-	sudo find $final_path/. -type f -exec chmod 644 {} \;
-	sudo chown -R www-data:www-data $final_path
+### Verify the checksum of a file, stored by `ynh_store_file_checksum` in the install script.
+### And create a backup of this file if the checksum is different. So the file will be backed up if the admin had modified it.
+ynh_backup_if_checksum_is_different "$final_path/index.php"
+ynh_backup_if_checksum_is_different "$application_file"
+# Recalculate and store the checksum of the file for the next upgrade.
+ynh_store_file_checksum "$final_path/index.php"
+ynh_store_file_checksum "$application_file"
 
-# Update Nginx configuration file
-	nginx_conf_file=/etc/nginx/conf.d/$domain.d/$app.conf
-	sudo cp ../conf/nginx.conf $nginx_conf_file
-        if [ $path = "/" ]; then
-            sudo sed -i "s@ROOTTOCHANGE@@g"          $nginx_conf_file
-        else
-            sudo sed -i "s@ROOTTOCHANGE@$path@g"     $nginx_conf_file
-        fi
-        sudo sed -i "s@PATHTOCHANGE@$path@g"         $nginx_conf_file
-	sudo sed -i "s@ALIASTOCHANGE@$final_path/@g" $nginx_conf_file
-	sudo sed -i "s@NAMETOCHANGE@$app@g"          $nginx_conf_file
-	sudo chown root:                             $nginx_conf_file
-	sudo chmod 644                               $nginx_conf_file
+#=================================================
+# SETUP LOGROTATE
+#=================================================
 
-	finalphpconf=/etc/php5/fpm/pool.d/$app.conf
-	sudo cp ../conf/php-fpm.conf        $finalphpconf
-	sudo sed -i "s@NAMETOCHANGE@$app@g" $finalphpconf
-	sudo chown root:                    $finalphpconf
-	sudo chmod 644                      $finalphpconf
+# Use logrotate to manage app-specific logfile(s)
+#ynh_use_logrotate --non-append
 
-# Reload services
-	sudo service php5-fpm reload
-	sudo service nginx reload
+#=================================================
+# SETUP SYSTEMD
+#=================================================
+
+# Create a dedicated systemd config
+#ynh_add_systemd_config
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# SECURE FILES AND DIRECTORIES
+#=================================================
+
+# Set permissions on app files
+chown -R www-data:www-data $final_path
+sudo find $final_path/. -type d -exec chmod 755 {} \;
+sudo find $final_path/. -type f -exec chmod 644 {} \;
+
+#=================================================
+# SETUP SSOWAT
+#=================================================
+
+# Make app public if necessary
+if [ $is_public -eq 1 ]
+then
+	# unprotected_uris allows SSO credentials to be passed anyway
+	ynh_app_setting_set $app unprotected_uris "/"
+fi
+
+#=================================================
+# RELOAD NGINX
+#=================================================
+
+systemctl reload nginx
+systemctl reload php5-fpm
