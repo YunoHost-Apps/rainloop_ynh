@@ -30,7 +30,7 @@
 	is_public=$(ynh_app_setting_get "$app" is_public)
 	password=$(ynh_app_setting_get "$app" password)
 	ldap=$(ynh_app_setting_get "$app" ldap)
-	lang=$(ynh_app_setting_get "$app" lang)
+	language=$(ynh_app_setting_get "$app" language)
 	dp_pwd=$(ynh_app_setting_get "$app" mysqlpwd)
 	db_user=$app
 	plugins=$(ynh_app_setting_get "$app" plugins)
@@ -42,8 +42,8 @@ CHECK_PATH
 
 # Copy the new sources
 	final_path=/var/www/$app
-	rainloop_path=${final_path}/app
-	sudo rm -rf $rainloop_path/rainloop		# Remove the previous Rainloop files except data
+	final_path=${final_path}/app
+	sudo rm -rf $final_path/rainloop		# Remove the previous Rainloop files except data
 
 	# Download sources and keys
 	sudo wget -q https://github.com/RainLoop/rainloop-webmail/releases/download/v${rainloop_version}/rainloop-community-${rainloop_version}.zip
@@ -54,13 +54,13 @@ CHECK_PATH
 	sudo gpg --verify --quiet rainloop-community-${rainloop_version}.zip.asc rainloop-community-${rainloop_version}.zip
 	sudo gpg --batch --delete-key --yes Rainloop
 	# Unzip and overwrite
-	sudo unzip -qq -o rainloop-community-${rainloop_version}.zip -d $rainloop_path/
+	sudo unzip -qq -o rainloop-community-${rainloop_version}.zip -d $final_path/
 
 	# Update ynh plugins:
-	sudo mkdir -p $rainloop_path/data/_data_/_default_/plugins
-	sudo cp -rf ../sources/plugins/auto-domain-grab $rainloop_path/data/_data_/_default_/plugins/.
-	sudo cp -rf ../sources/plugins/ynh-login-mapping $rainloop_path/data/_data_/_default_/plugins/.
-	sudo cp -rf ../sources/plugins/ynh-ldap-suggestions $rainloop_path/data/_data_/_default_/plugins/.
+	sudo mkdir -p $final_path/data/_data_/_default_/plugins
+	sudo cp -rf ../sources/plugins/auto-domain-grab $final_path/data/_data_/_default_/plugins/.
+	sudo cp -rf ../sources/plugins/ynh-login-mapping $final_path/data/_data_/_default_/plugins/.
+	sudo cp -rf ../sources/plugins/ynh-ldap-suggestions $final_path/data/_data_/_default_/plugins/.
 
 # update SSO
 	sudo cp ../sources/sso/sso.php        			$final_path/index.php

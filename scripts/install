@@ -37,7 +37,6 @@ is_public=$YNH_APP_ARG_IS_PUBLIC
 language=$YNH_APP_ARG_LANGUAGE
 password=$YNH_APP_ARG_PASSWORD
 ldap=$YNH_APP_ARG_LDAP
-999 lang=$YNH_APP_ARG_LANG => to language
 
 ### If it's a multi-instance app, meaning it can be installed several times independently
 ### The id of the app as stated in the manifest is available as $YNH_APP_ID
@@ -136,13 +135,6 @@ ynh_app_setting_set $app final_path $final_path
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source "$final_path"
 
-
-	# Install plugins
-	sudo mkdir -p $rainloop_path/data/_data_/_default_/plugins
-	sudo cp -rf ../sources/plugins/auto-domain-grab $rainloop_path/data/_data_/_default_/plugins/.
-	sudo cp -rf ../sources/plugins/ynh-login-mapping $rainloop_path/data/_data_/_default_/plugins/.
-	sudo cp -rf ../sources/plugins/ynh-ldap-suggestions $rainloop_path/data/_data_/_default_/plugins/.
-
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
@@ -183,58 +175,37 @@ ynh_add_fpm_config
 # ...
 #=================================================
 
+# Install plugins
+    sudo mkdir -p $final_path/data/_data_/_default_/plugins
+    sudo cp -rf ../sources/plugins/auto-domain-grab $final_path/data/_data_/_default_/plugins/.
+    sudo cp -rf ../sources/plugins/ynh-login-mapping $final_path/data/_data_/_default_/plugins/.
+    sudo cp -rf ../sources/plugins/ynh-ldap-suggestions $final_path/data/_data_/_default_/plugins/.
+
 # Autoconfig
 	sudo mkdir -p $final_path/data/_data_/_default_/configs/
 	application_file=$final_path/data/_data_/_default_/configs/application.ini
-
-	
-
-	# Set plugins
-	plugins="ynh-login-mapping,auto-domain-grab"		# This plugin is trying to automatically grab unknown domains if users want to add external email accounts
-	if [ "$ldap" = "Yes" ];
-	then
-		plugins="$plugins,ynh-ldap-suggestions"		# This plugin is to suggest YunoHost users in recipients list
-	fi
-	ynh_app_setting_set "$app" plugins "$plugins"
-
 	sudo cp ../conf/data/configs/application.ini $application_file
-	sudo sed -i "s@domain.tld@$domain@g"         $application_file
-	sudo sed -i "s@MYSQLUSER@$dbuser@g"          $application_file
-	sudo sed -i "s@MYSQLPASSWORD@$dbpass@g"      $application_file
-	sudo sed -i "s@LANGTOCHANGE@$language@g"         $application_file
-	sudo sed -i "s@PLUGINSTOENABLE@$plugins@g"   $application_file
 
 # Set admin password
-	sudo php ../conf/config.php --index="$rainloop_path/index.php" --password="$password"
+	sudo php ../conf/config.php --index="$final_path/index.php" --password="$password"
 	ynh_app_setting_set "$app" password "$password"
 
 # Add default domain configs by looping through all the domains already added
-	sudo mkdir -p $rainloop_path/data/_data_/_default_/domains/
+	sudo mkdir -p $final_path/data/_data_/_default_/domains/
 	# get list of ldap domains
 	alldomains=`ldapsearch -LLL -x -b ou=domains,dc=yunohost,dc=org -s one "objectclass=top" virtualdomain | grep -v "dn:" | sed "s/virtualdomain://" `
 	for ldomain in $alldomains ; do
-		sudo cp ../conf/data/domains/domain.tld.ini $rainloop_path/data/_data_/_default_/domains/$ldomain.ini
+		sudo cp ../conf/data/domains/domain.tld.ini $final_path/data/_data_/_default_/domains/$ldomain.ini
 	done
 	# Add wildcard domain for auto-grab
-	sudo cp ../conf/data/domains/default.ini $rainloop_path/data/_data_/_default_/domains/default.ini
+	sudo cp ../conf/data/domains/default.ini $final_path/data/_data_/_default_/domains/default.ini
 
-# install SSO - at the moment the index is the SSO and rainloop is installed in /app
+# Install SSO - at the moment the index is the SSO and rainloop is installed in /app
 	sudo cp ../sources/sso/sso.php        			$final_path/index.php
-	sudo sed -i "s@domain.tld@$domain@g"  			$final_path/index.php
-	sudo sed -i "s@ALIASTOCHANGE@$final_path@g"  	$final_path/index.php
-	if [ $path = "/" ]; then
-	    sudo sed -i "s@ROOTTOCHANGE@@g"          	$final_path/index.php
-	else
-	    sudo sed -i "s@ROOTTOCHANGE@$path@g"     	$final_path/index.php
-	fi
-
+	
 # Install PGPback by chtixof to allow users to backup/restore their PGP private keys on the server
 	sudo cp -rf ../sources/pgpback        	  $final_path/.
 
-# Set permissions to rainloop directory
-	sudo find $final_path/. -type d -exec chmod 755 {} \;
-	sudo find $final_path/. -type f -exec chmod 644 {} \;
-	sudo chown -R www-data:www-data $final_path
 
 #=================================================
 # SETUP SYSTEMD
@@ -292,6 +263,25 @@ ynh_add_fpm_config
 
 #ynh_replace_string "match_string" "replace_string" "$final_path/CONFIG_FILE"
 
+# Set plugins
+	plugins="ynh-login-mapping,auto-domain-grab"		# This plugin is trying to automatically grab unknown domains if users want to add external email accounts
+	if [ "$ldap" = "Yes" ];
+	then
+		plugins="$plugins,ynh-ldap-suggestions"		# This plugin is to suggest YunoHost users in recipients list
+	fi
+	ynh_app_setting_set "$app" plugins "$plugins"
+
+# Autoconfig
+	ynh_replace_string "__LANGUAGE__" $language "$application_file"
+	ynh_replace_string "__DOMAIN__" $domain "$application_file"
+	ynh_replace_string "__DB_NAME__" $db_name "$application_file"
+	ynh_replace_string "__DB_PWD__" $db_pwd "$application_file"
+	ynh_replace_string "__PLUGINS__" $plugins "$application_file"
+
+# Configure SSO
+	ynh_replace_string "__URL__" $domain$path_url $final_path/index.php
+	ynh_replace_string "__FINAL_PATH__" $final_path $final_path/index.php
+
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
 #=================================================
@@ -302,6 +292,8 @@ ynh_add_fpm_config
 
 # Calculate and store the config file checksum into the app settings
 #ynh_store_file_checksum "$final_path/CONFIG_FILE"
+ynh_store_file_checksum "$application_file"
+ynh_store_file_checksum "$final_path/index.php"
 
 #=================================================
 # GENERIC FINALIZATION
@@ -315,6 +307,11 @@ ynh_add_fpm_config
 
 # Set permissions to app files
 #chown -R root: $final_path
+
+# Set permissions to rainloop directory
+sudo find $final_path/. -type d -exec chmod 755 {} \;
+sudo find $final_path/. -type f -exec chmod 644 {} \;
+sudo chown -R www-data:www-data $final_path
 
 #=================================================
 # SETUP LOGROTATE

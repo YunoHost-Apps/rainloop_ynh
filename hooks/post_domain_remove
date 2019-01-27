@@ -2,6 +2,6 @@
 
 app='rainloop'	# This could never work with multi-instance. Need to find a better way
 domain=$1
-rainloop_path=/var/www/$app/app
+final_path=/var/www/$app/app
 
-sudo rm $rainloop_path/data/_data_/_default_/domains/$domain.ini
+sudo rm $final_path/data/_data_/_default_/domains/$domain.ini
