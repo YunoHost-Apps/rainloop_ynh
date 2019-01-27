@@ -30,7 +30,7 @@ lang=$(ynh_app_setting_get $app lang)
 language=$lang
 ynh_app_setting_set $app language $language
 
-rainloop_path=${final_path}/app
+rainloop_path=$final_path/app
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY

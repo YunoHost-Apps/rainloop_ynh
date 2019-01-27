@@ -53,7 +53,7 @@ app=$YNH_APP_INSTANCE_NAME
 ### If the app provides an internal web server (or uses another application server such as uwsgi), the final path should be "/opt/yunohost/$app"
 final_path=/var/www/$app
 test ! -e "$final_path" || ynh_die "This path already contains a folder"
-rainloop_path=${final_path}/app
+rainloop_path=$final_path/app
 
 
 # Normalize the url path syntax

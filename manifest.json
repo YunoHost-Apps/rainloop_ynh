@@ -58,7 +58,7 @@
                     "fr": "Choisissez la langue de l'application"
                 },
                 "choices": ["fr", "en"],
-                "default": "fr"
+                "default": "en"
             },
             {
                 "name": "password",
