@@ -1,79 +1,122 @@
 #!/bin/bash
-set -u
 
-# Exit on command errors and treat unset variables as an error
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-# Source app helpers
-	source /usr/share/yunohost/helpers
+source _common.sh
+source /usr/share/yunohost/helpers
 
-REMOVE_NGINX_CONF () {  # Suppression de la configuration nginx
-        if [ -e "/etc/nginx/conf.d/$domain.d/$app.conf" ]; then # Delete nginx config
-                echo "Delete nginx config"
-                sudo rm "/etc/nginx/conf.d/$domain.d/$app.conf"
-        fi
-}
+#=================================================
+# LOAD SETTINGS
+#=================================================
 
-REMOVE_FPM_CONF () {    # Suppression de la configuration du pool php-fpm
-        if [ -e "/etc/php5/fpm/pool.d/$app.conf" ]; then        # Delete fpm config
-                echo "Delete fpm config"
-                sudo rm "/etc/php5/fpm/pool.d/$app.conf"
-        fi
-}
+app=$YNH_APP_INSTANCE_NAME
 
-SECURE_REMOVE () {      # Suppression de dossier avec vérification des variables
-        chaine="$1"     # L'argument doit être donné entre quotes simple '', pour éviter d'interpréter les variables.
-        no_var=0
-        while (echo "$chaine" | grep -q '\$')   # Boucle tant qu'il y a des $ dans la chaine
-        do
-                no_var=1
-                global_var=$(echo "$chaine" | cut -d '$' -f 2)  # Isole la première variable trouvée.
-                only_var=\$$(expr "$global_var" : '\([A-Za-z0-9_]*\)')  # Isole complètement la variable en ajoutant le $ au début et en gardant uniquement le nom de la variable. Se débarrasse$
-                real_var=$(eval "echo ${only_var}")             # `eval "echo ${var}` permet d'interpréter une variable contenue dans une variable.
-                if test -z "$real_var" || [ "$real_var" = "/" ]; then
-                        echo "Variable $only_var is empty, suppression of $chaine cancelled." >&2
-                        return 1
-                fi
-                chaine=$(echo "$chaine" | sed "s@$only_var@$real_var@") # remplace la variable par sa valeur dans la chaine.
-        done
-        if [ "$no_var" -eq 1 ]
-        then
-                if [ -e "$chaine" ]; then
-                        echo "Delete directory $chaine"
-                        sudo rm -r "$chaine"
-                fi
-                return 0
-        else
-                echo "No detected variable." >&2
-                return 1
-        fi
-}
+domain=$(ynh_app_setting_get $app domain)
+port=$(ynh_app_setting_get $app port)
+db_name=$(ynh_app_setting_get $app db_name)
+db_user=$db_name
+final_path=$(ynh_app_setting_get $app final_path)
 
-REMOVE_BDD () { # Suppression de la base de donnée et de l'utilisateur associé.
-# $1 = Nom de la base de donnée
-        # Utilise '$app' comme nom d'utilisateur et de base de donnée
-        db_user=$1
-        if mysqlshow -u root -p$(sudo cat $MYSQL_ROOT_PWD_FILE) | grep -q "^| $db_user"; then
-                echo "Delete db"
-                ynh_mysql_drop_db $db_user
-                ynh_mysql_drop_user $db_user
-        fi
-}
+#=================================================
+# STANDARD REMOVE
+#=================================================
+# REMOVE SERVICE FROM ADMIN PANEL
+#=================================================
 
-# Retrieve parameters
-	app=$YNH_APP_INSTANCE_NAME
-	domain=$(ynh_app_setting_get "$app" domain)
+# Remove a service from the admin panel, added by `yunohost service add`
+#if yunohost service status | grep -q $app
+#then
+#	echo "Remove $app service"
+#	yunohost service remove $app
+#fi
 
-# Drop MySQL database and user
-	REMOVE_BDD "$app"
+#=================================================
+# STOP AND REMOVE SERVICE
+#=================================================
 
-# Delete app directory and configurations using secure remove
-	SECURE_REMOVE	'/var/www/$app'
-	REMOVE_NGINX_CONF
-	REMOVE_FPM_CONF
+# Remove the dedicated systemd config
+#ynh_remove_systemd_config
+
+#=================================================
+# REMOVE DEPENDENCIES
+#=================================================
+
+# Remove metapackage and its dependencies
+#ynh_remove_app_dependencies
+
+#=================================================
+# REMOVE THE MYSQL DATABASE
+#=================================================
+
+# Remove a database if it exists, along with the associated user
+ynh_mysql_remove_db $db_user $db_name
+
+#=================================================
+# REMOVE APP MAIN DIR
+#=================================================
+
+# Remove the app directory securely
+ynh_secure_remove "$final_path"
+
+#=================================================
+# REMOVE NGINX CONFIGURATION
+#=================================================
+
+# Remove the dedicated nginx config
+ynh_remove_nginx_config
+
+#=================================================
+# REMOVE PHP-FPM CONFIGURATION
+#=================================================
+
+# Remove the dedicated php-fpm config
+ynh_remove_fpm_config
+
+#=================================================
+# REMOVE LOGROTATE CONFIGURATION
+#=================================================
+
+# Remove the app-specific logrotate config
+#ynh_remove_logrotate
+
+#=================================================
+# CLOSE A PORT
+#=================================================
+
+#if yunohost firewall list | grep -q "\- $port$"
+#then
+#	echo "Close port $port" >&2
+#	yunohost firewall disallow TCP $port 2>&1
+#fi
+
+#=================================================
+# SPECIFIC REMOVE
+#=================================================
+# REMOVE THE CRON FILE
+#=================================================
+
+# Remove a cron file
+#ynh_secure_remove "/etc/cron.d/$app"
+
+# Remove a directory securely
+#ynh_secure_remove "/etc/$app/"
+
+# Remove the log files
+#ynh_secure_remove "/var/log/$app/"
 
 # Remove GPG key
 	sudo gpg --batch --delete-key --yes Rainloop
 
-# Reload services
-	sudo service php5-fpm reload
-	sudo service nginx reload
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# REMOVE DEDICATED USER
+#=================================================
+
+# Delete a system user
+#ynh_system_user_delete $app
