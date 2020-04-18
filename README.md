@@ -12,7 +12,7 @@ If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to
 
 Rainloop is a lightweight webmail.
 
-**Shipped version:** 1.12.1
+**Shipped version:** 1.14.0
 
 ## Screenshots
 

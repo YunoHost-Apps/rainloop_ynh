@@ -6,7 +6,7 @@
 		"en": "Lightweight multi-account webmail",
 		"fr": "Webmail léger multi-comptes"
 	},
-	"version": "1.12.1~ynh3",
+	"version": "1.14.0~ynh1",
 	"url": "https://www.rainloop.net/",
 	"license": "AGPL-3.0-or-later",
 	"maintainer": {
