@@ -1,9 +1,9 @@
 ;; Test complet
 	; Manifest
-        domain="domain.tld"    (DOMAIN)
-        path="/rainloop"    (PATH)
+        domain="domain.tld"
+        path="/rainloop"
         language="en"
-        is_public=1 (PUBLIC|public=1|private=0)
+        is_public=1
 	    password="pass"
         ldap=1
     ; Checks
