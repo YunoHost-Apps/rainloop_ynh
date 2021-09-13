@@ -66,6 +66,13 @@ if [ -z "$language" ]; then
 	ynh_app_setting_delete --app=$app --key=$lang
 fi
 
+# If language doesn't exist, create it
+if [ -z "$lang" ]; then
+	language="en"
+	ynh_app_setting_set --app=$app --key=language --value=$language
+	ynh_app_setting_delete --app=$app --key=$lang
+fi
+
 case "$language" in
 	Francais)
 		language="fr"
