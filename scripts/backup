@@ -52,12 +52,6 @@ ynh_backup --src_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 ynh_backup --src_path="/etc/php/$phpversion/fpm/pool.d/$app.conf"
 
 #=================================================
-# BACKUP THE MYSQL DATABASE
-#=================================================
-
-ynh_mysql_dump_db --database="$db_name" > db.sql
-
-#=================================================
 # BACKUP FAIL2BAN CONFIGURATION
 #=================================================
 
@@ -71,6 +65,12 @@ ynh_backup --src_path="/etc/fail2ban/filter.d/$app.conf"
 #=================================================
 
 ynh_backup --src_path="/etc/logrotate.d/$app"
+
+#=================================================
+# BACKUP THE MYSQL DATABASE
+#=================================================
+
+ynh_mysql_dump_db --database="$db_name" > db.sql
 
 #=================================================
 # END OF SCRIPT
