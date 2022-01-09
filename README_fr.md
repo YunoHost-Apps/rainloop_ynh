@@ -13,7 +13,7 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 Webmail léger multi-comptes
 
-**Version incluse :** 1.16.0~ynh1
+**Version incluse :** 1.16.0~ynh2
 
 **Démo :** https://mail.rainloop.net/
 

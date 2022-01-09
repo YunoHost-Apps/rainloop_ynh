@@ -17,7 +17,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 Lightweight multi-account webmail
 
-**Shipped version:** 1.16.0~ynh1
+**Shipped version:** 1.16.0~ynh2
 
 **Demo:** https://mail.rainloop.net/
 
