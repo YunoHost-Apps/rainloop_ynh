@@ -6,14 +6,21 @@
 		"en": "Lightweight multi-account webmail",
 		"fr": "Webmail léger multi-comptes"
 	},
-	"version": "1.16.0~ynh1",
+	"version": "1.16.0~ynh2",
 	"url": "https://www.rainloop.net/",
+	"upstream": {
+        "license": "AGPL-3.0-or-later",
+        "website": "https://www.rainloop.net/",
+        "demo": "https://mail.rainloop.net/",
+        "admindoc": "https://www.rainloop.net/docs/configuration/",
+        "code": "https://github.com/RainLoop/rainloop-webmail"
+    },
 	"license": "AGPL-3.0-or-later",
 	"maintainer": {
 		"name": "scith, Djip007, polytan02"
 	},
 	"requirements": {
-		"yunohost": ">= 4.1.7"
+		"yunohost": ">= 4.3.0"
 	},
 	"multi_instance": true,
 	"services": [
@@ -25,8 +32,7 @@
 		"install" : [
 			{
 				"name": "domain",
-				"type": "domain",
-                "example": "example.com"
+				"type": "domain"
 			},
 			{
 				"name": "path",
@@ -41,8 +47,7 @@
 			},
 			{
 				"name": "password",
-				"type": "password",
-				"example": "Choose a password"
+				"type": "password"
 			},
 			{
 				"name": "ldap",
