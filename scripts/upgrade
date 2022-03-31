@@ -63,7 +63,6 @@ fi
 if [ -z "$language" ]; then
 	language="en"
 	ynh_app_setting_set --app=$app --key=language --value=$language
-	ynh_app_setting_delete --app=$app --key=$lang
 fi
 
 case "$language" in
