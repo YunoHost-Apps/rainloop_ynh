@@ -17,6 +17,10 @@ Webmail léger multi-comptes
 
 **Démo :** https://mail.rainloop.net/
 
+## Captures d'écran
+
+![](./doc/screenshots/screenshot.png)
+
 ## Documentations et ressources
 
 * Site officiel de l'app : https://www.rainloop.net/

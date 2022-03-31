@@ -21,6 +21,10 @@ Lightweight multi-account webmail
 
 **Demo:** https://mail.rainloop.net/
 
+## Screenshots
+
+![](./doc/screenshots/screenshot.png)
+
 ## Documentation and resources
 
 * Official app website: https://www.rainloop.net/
