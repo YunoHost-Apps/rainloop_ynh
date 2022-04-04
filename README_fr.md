@@ -11,12 +11,43 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 ## Vue d'ensemble
 
-Webmail léger multi-comptes
+Lightweight multi-account webmail
 
-**Version incluse :** 1.16.0~ynh2
+### Features
+
+- Modern user interface.
+- Complete support of IMAP and SMTP protocols including SSL and STARTTLS.
+- Sieve scripts (Filters and vacation message).
+- Direct access to mail server is used (mails are not stored locally on web server).
+- Allows for adding multiple accounts to primary one, simultaneous access to different accounts in different browser tabs is supported. Additional identities.
+- Administrative panel for configuring main options.
+- Integration with Facebook, Google, Twitter and Dropbox.
+- Managing folders list.
+- Configurable multi-level caching system.
+- Extending functionality with plugins installed through admin panel.
+- Perfect rendering of complex HTML mails.
+- Drag'n'drop for mails and attachments.
+- Keyboard shortcuts support.
+- Autocompletion of e-mail addresses.
+
+
+**Version incluse :** 1.16.0~ynh3
 
 **Démo :** https://mail.rainloop.net/
 
+## Captures d'écran
+
+![](./doc/screenshots/screenshot.png)
+
+## Avertissements / informations importantes
+
+## Access to admin panel
+
+To access admin panel, use URL of the following kind: http://product_installation_URL/app/?admin
+
+For example: http://webmail.domain.com/app/?admin
+
+Default login is `admin`, the password is the one you chose during installation. 
 ## Documentations et ressources
 
 * Site officiel de l'app : https://www.rainloop.net/
