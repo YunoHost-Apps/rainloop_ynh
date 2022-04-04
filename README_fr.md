@@ -31,7 +31,7 @@ Lightweight multi-account webmail
 - Autocompletion of e-mail addresses.
 
 
-**Version incluse :** 1.16.0~ynh2
+**Version incluse :** 1.16.0~ynh3
 
 **Démo :** https://mail.rainloop.net/
 
