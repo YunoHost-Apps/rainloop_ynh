@@ -1,5 +1,5 @@
---- /tmp/HtmlUtils.php	2022-04-24 22:35:36.000000000 +0200
-+++ rainloop/v/0.0.0/app/libraries/MailSo/Base/HtmlUtils.php	2022-04-24 22:36:28.000000000 +0200
+--- app/rainloop/v/1.16.0/app/libraries/MailSo/Base/HtmlUtils.php	2022-04-24 22:35:36.000000000 +0200
++++ app/rainloop/v/1.16.0/app/libraries/MailSo/Base/HtmlUtils.php	2022-04-24 22:36:28.000000000 +0200
 @@ -239,7 +239,8 @@
  				$oWrapHtml->setAttribute($sKey, $sValue);
  			}
