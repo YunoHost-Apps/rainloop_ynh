@@ -112,7 +112,7 @@ then
 	# FIXME because we need to apply the patch manually with --binary flag
 	# while we should be able to simply use the patching feature of ynh_setup_source
 	ynh_add_config --template="../sources/patches/app-CVE-2022-29360.patch.template" --destination="../sources/patches/FIXMEapp-CVE-2022-29360.patch"
-	patch --binary $final_path/app/rainloop/v/$version/app/libraries/MailSo/Base/HtmlUtils.php <../sources/patches/FIXMEapp-CVE-2022-29360.patch
+	patch --binary --forward $final_path/app/rainloop/v/$version/app/libraries/MailSo/Base/HtmlUtils.php <../sources/patches/FIXMEapp-CVE-2022-29360.patch
 fi
 
 #=================================================
