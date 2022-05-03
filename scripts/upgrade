@@ -63,7 +63,6 @@ fi
 if [ -z "$language" ]; then
 	language="en"
 	ynh_app_setting_set --app=$app --key=language --value=$language
-	ynh_app_setting_delete --app=$app --key=$lang
 fi
 
 case "$language" in
@@ -78,6 +77,11 @@ case "$language" in
 	*)
 		;;
 esac
+
+# Delete legacy lang setting
+if [ -n "$(ynh_app_setting_get --app=$app --key=lang)" ]; then
+	ynh_app_setting_delete --app=$app --key=$lang
+fi
 
 # Cleaning legacy permissions
 if ynh_legacy_permissions_exists; then
