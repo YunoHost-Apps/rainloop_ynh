@@ -80,7 +80,7 @@ esac
 
 # Delete legacy lang setting
 if [ -n "$(ynh_app_setting_get --app=$app --key=lang)" ]; then
-	ynh_app_setting_delete --app=$app --key=$lang
+	ynh_app_setting_delete --app=$app --key=lang
 fi
 
 # Cleaning legacy permissions
