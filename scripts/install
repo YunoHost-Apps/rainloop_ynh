@@ -87,6 +87,14 @@ ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$final_path/app"
 
+ynh_script_progression --message="Patching CVE-2022-29360 code vulnerability..." --weight=1
+# Deploy CVE-2022-29360 patch
+version=$(ynh_app_upstream_version)
+# FIXME because we need to apply the patch manually with --binary flag
+# while we should be able to simply use the patching feature of ynh_setup_source
+ynh_add_config --template="../sources/patches/app-CVE-2022-29360.patch.template" --destination="../sources/patches/FIXMEapp-CVE-2022-29360.patch"
+patch --silent --binary $final_path/app/rainloop/v/$version/app/libraries/MailSo/Base/HtmlUtils.php < ../sources/patches/FIXMEapp-CVE-2022-29360.patch
+
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
@@ -202,6 +210,13 @@ fi
 ynh_script_progression --message="Reloading NGINX web server..." --weight=1
 
 ynh_systemd_action --service_name=nginx --action=reload
+
+#=================================================
+# SEND README TO ADMIN
+#=================================================
+ynh_script_progression --message="Sending ReadMe to admin..."
+
+ynh_send_readme_to_admin --app_message="../conf/email" --recipients="root" --type="warning"
 
 #=================================================
 # END OF SCRIPT
