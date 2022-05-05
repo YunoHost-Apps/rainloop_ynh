@@ -1,0 +1,12 @@
+The current version of Rainloop contains a code vulnerability that can expose users emails to attackers.
+
+For more information, please refer to:
+
+- https://blog.sonarsource.com/rainloop-emails-at-risk-due-to-code-flaw/
+- https://forum.yunohost.org/t/security-rainloop-suffers-a-security-bug/19579
+
+We have implemented a patch in this YunoHost package to fix it.
+
+However, since Rainloop's development has been halted for a year now, and since its developers
+have yet to react to solve this critical flaw, we strongly encourage you to seek alternative
+applications to replace Rainloop.

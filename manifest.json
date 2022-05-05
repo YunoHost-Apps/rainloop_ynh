@@ -31,6 +31,14 @@
 	"arguments": {
 		"install" : [
 			{
+			"name": "warning",
+			"type": "display_text",
+				"ask": {
+					"en": "Rainloop is effectively unmaintained and its source code contains a security flaw (patched here). Installation is discouraged.",
+					"fr": "Rainloop n'est de facto plus maintenue, et son code source contient une faille de sécuritée (corrigée ici). Son installation est déconseillée."
+				}
+			},
+			{
 				"name": "domain",
 				"type": "domain"
 			},
