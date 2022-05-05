@@ -15,3 +15,6 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+
+# CRLF for patch file
+sources/patches/app-CVE-2022-29360.patch.template eol=crlf

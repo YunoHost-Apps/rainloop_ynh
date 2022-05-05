@@ -23,5 +23,5 @@ Email=
 Notification=none
 ;;; Upgrade options
 	; commit=7a48f5b9b35ff22529190f282bfcf5f56944741a
-		name=Upgrade to v.1.14.0
+		name=v1.14.0
 		manifest_arg=domain=DOMAIN&path=PATH&is_public=Yes&password=password&ldap=Yes&language=en&

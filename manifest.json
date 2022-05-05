@@ -6,7 +6,7 @@
 		"en": "Lightweight multi-account webmail",
 		"fr": "Webmail léger multi-comptes"
 	},
-	"version": "1.16.0~ynh3",
+	"version": "1.16.0~ynh4",
 	"url": "https://www.rainloop.net/",
 	"upstream": {
         "license": "AGPL-3.0-or-later",
@@ -30,6 +30,14 @@
 	],
 	"arguments": {
 		"install" : [
+			{
+			"name": "warning",
+			"type": "display_text",
+				"ask": {
+					"en": "Rainloop is effectively unmaintained and its source code contains a security flaw (patched here). Installation is discouraged.",
+					"fr": "Rainloop n'est de facto plus maintenue, et son code source contient une faille de sécuritée (corrigée ici). Son installation est déconseillée."
+				}
+			},
 			{
 				"name": "domain",
 				"type": "domain"
