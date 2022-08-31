@@ -112,15 +112,6 @@ then
 	ynh_setup_source --dest_dir="$final_path/app"
 fi
 
-ynh_script_progression --message="Patching CVE-2022-29360 code vulnerability..." --weight=1
-ynh_print_warn --message="You should stop using Rainloop, its upstream code is not maintained anymore"
-# Deploy CVE-2022-29360 patch
-version=$(ynh_app_upstream_version)
-# FIXME because we need to apply the patch manually with --binary flag
-# while we should be able to simply use the patching feature of ynh_setup_source
-ynh_add_config --template="../sources/patches/app-CVE-2022-29360.patch.template" --destination="../sources/patches/FIXMEapp-CVE-2022-29360.patch"
-patched="$(patch --silent --binary --forward $final_path/app/rainloop/v/$version/app/libraries/MailSo/Base/HtmlUtils.php <../sources/patches/FIXMEapp-CVE-2022-29360.patch)" || echo "${patched}" | grep "Reversed (or previously applied) patch detected!  Skipping patch." -q || (echo "$patched" && false);
-
 #=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
