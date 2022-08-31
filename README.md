@@ -38,6 +38,7 @@ Lightweight multi-account webmail
 **Shipped version:** 1.17.0~ynh1
 
 
+
 **Demo:** https://mail.rainloop.net/
 
 ## Screenshots
