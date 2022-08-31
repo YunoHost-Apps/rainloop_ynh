@@ -122,14 +122,6 @@ ynh_add_config --template="../sources/patches/app-CVE-2022-29360.patch.template"
 patched="$(patch --silent --binary --forward $final_path/app/rainloop/v/$version/app/libraries/MailSo/Base/HtmlUtils.php <../sources/patches/FIXMEapp-CVE-2022-29360.patch)" || echo "${patched}" | grep "Reversed (or previously applied) patch detected!  Skipping patch." -q || (echo "$patched" && false);
 
 #=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=2
-
-# Create a dedicated NGINX config
-ynh_add_nginx_config
-
-#=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Upgrading dependencies..." --weight=1
@@ -145,14 +137,22 @@ ynh_script_progression --message="Upgrading PHP-FPM configuration..." --weight=2
 ynh_add_fpm_config
 
 #=================================================
+# NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=2
+
+# Create a dedicated NGINX config
+ynh_add_nginx_config
+
+#=================================================
 # SPECIFIC UPGRADE
 #=================================================
 # UPDATE SSO AND PGP
 #=================================================
 ynh_script_progression --message="Upgrading Rainloop configuration..." --weight=2
 
-# Upgrade time_offset value for fail2ban
-# FIXME Temporary fix for rainloop, waiting for https://github.com/YunoHost/yunohost/pull/752 to be released.
+# Upgrade time_offset value for Fail2Ban
+# FIXME Temporary fix for Rainloop, waiting for https://github.com/YunoHost/yunohost/pull/752 to be released.
 # ynh_replace_string --match_string="^time_offset = .*" --replace_string="time_offset = $(date +%:::z)" --target_file="$final_path/app/data/_data_/_default_/configs/application.ini"
 timezone="$(date +%:::z)"
 ynh_replace_string --match_string="^time_offset = .*" --replace_string="time_offset = ${timezone//-/\\-}" --target_file="$final_path/app/data/_data_/_default_/configs/application.ini"
