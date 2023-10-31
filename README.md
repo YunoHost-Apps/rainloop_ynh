@@ -5,7 +5,8 @@ It shall NOT be edited by hand.
 
 # Rainloop for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/rainloop.svg)](https://dash.yunohost.org/appci/app/rainloop) ![Working status](https://ci-apps.yunohost.org/ci/badges/rainloop.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/rainloop.maintain.svg)  
+[![Integration level](https://dash.yunohost.org/integration/rainloop.svg)](https://dash.yunohost.org/appci/app/rainloop) ![Working status](https://ci-apps.yunohost.org/ci/badges/rainloop.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/rainloop.maintain.svg)
+
 [![Install Rainloop with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=rainloop)
 
 *[Lire ce readme en français.](./README_fr.md)*
@@ -37,7 +38,6 @@ Lightweight multi-account webmail
 
 **Shipped version:** 1.17.0~ynh1
 
-
 **Demo:** https://mail.rainloop.net/
 
 ## Screenshots
@@ -53,12 +53,20 @@ To access admin panel, use URL of the following kind: http://product_installatio
 For example: http://webmail.domain.com/app/?admin
 
 Default login is `admin`, the password is the one you chose during installation. 
+## :red_circle: Antifeatures
+
+- **Bad security reputation**: Has a bad security reputation, such as deprecated addons.
+
+- **Upstream not maintained**: This software is not maintained anymore. Expect it to break down over time, be exposed to unfixed security breaches, etc.
+
+- **Replaced by another app**: Was replaced by another app. Please refer to the README.
+
 ## Documentation and resources
 
 * Official app website: <https://www.rainloop.net/>
 * Official admin documentation: <https://www.rainloop.net/docs/configuration/>
 * Upstream app code repository: <https://github.com/RainLoop/rainloop-webmail>
-* YunoHost documentation for this app: <https://yunohost.org/app_rainloop>
+* YunoHost Store: <https://apps.yunohost.org/app/rainloop>
 * Report a bug: <https://github.com/YunoHost-Apps/rainloop_ynh/issues>
 
 ## Developer info

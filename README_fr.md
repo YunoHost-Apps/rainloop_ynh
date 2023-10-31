@@ -5,15 +5,16 @@ It shall NOT be edited by hand.
 
 # Rainloop pour YunoHost
 
-[![Niveau d'intégration](https://dash.yunohost.org/integration/rainloop.svg)](https://dash.yunohost.org/appci/app/rainloop) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/rainloop.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/rainloop.maintain.svg)  
+[![Niveau d’intégration](https://dash.yunohost.org/integration/rainloop.svg)](https://dash.yunohost.org/appci/app/rainloop) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/rainloop.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/rainloop.maintain.svg)
+
 [![Installer Rainloop avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=rainloop)
 
 *[Read this readme in english.](./README.md)*
 
-> *Ce package vous permet d'installer Rainloop rapidement et simplement sur un serveur YunoHost.
-Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l'installer et en profiter.*
+> *Ce package vous permet d’installer Rainloop rapidement et simplement sur un serveur YunoHost.
+Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l’installer et en profiter.*
 
-## Vue d'ensemble
+## Vue d’ensemble
 
 Lightweight multi-account webmail
 
@@ -35,14 +36,13 @@ Lightweight multi-account webmail
 - Autocompletion of e-mail addresses.
 
 
-**Version incluse :** 1.17.0~ynh1
-
+**Version incluse :** 1.17.0~ynh1
 
 **Démo :** https://mail.rainloop.net/
 
-## Captures d'écran
+## Captures d’écran
 
-![Capture d'écran de Rainloop](./doc/screenshots/screenshot.png)
+![Capture d’écran de Rainloop](./doc/screenshots/screenshot.png)
 
 ## Avertissements / informations importantes
 
@@ -53,12 +53,20 @@ To access admin panel, use URL of the following kind: http://product_installatio
 For example: http://webmail.domain.com/app/?admin
 
 Default login is `admin`, the password is the one you chose during installation. 
+## :red_circle: Fonctions indésirables
+
+- **Bad security reputation**: Has a bad security reputation, such as deprecated addons.
+
+- **Upstream not maintained**: This software is not maintained anymore. Expect it to break down over time, be exposed to unfixed security breaches, etc.
+
+- **Replaced by another app**: Was replaced by another app. Please refer to the README.
+
 ## Documentations et ressources
 
-* Site officiel de l'app : <https://www.rainloop.net/>
-* Documentation officielle de l'admin : <https://www.rainloop.net/docs/configuration/>
-* Dépôt de code officiel de l'app : <https://github.com/RainLoop/rainloop-webmail>
-* Documentation YunoHost pour cette app : <https://yunohost.org/app_rainloop>
+* Site officiel de l’app : <https://www.rainloop.net/>
+* Documentation officielle de l’admin : <https://www.rainloop.net/docs/configuration/>
+* Dépôt de code officiel de l’app : <https://github.com/RainLoop/rainloop-webmail>
+* YunoHost Store: <https://apps.yunohost.org/app/rainloop>
 * Signaler un bug : <https://github.com/YunoHost-Apps/rainloop_ynh/issues>
 
 ## Informations pour les développeurs
@@ -73,4 +81,4 @@ ou
 sudo yunohost app upgrade rainloop -u https://github.com/YunoHost-Apps/rainloop_ynh/tree/testing --debug
 ```
 
-**Plus d'infos sur le packaging d'applications :** <https://yunohost.org/packaging_apps>
+**Plus d’infos sur le packaging d’applications :** <https://yunohost.org/packaging_apps>
