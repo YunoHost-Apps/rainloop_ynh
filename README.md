@@ -46,6 +46,10 @@ Lightweight multi-account webmail
 
 ## Disclaimers / important information
 
+## Rainloop is unmaintained ⚠️
+
+See https://github.com/RainLoop/rainloop-webmail/issues/2162
+
 ## Access to admin panel
 
 To access admin panel, use URL of the following kind: http://product_installation_URL/app/?admin
@@ -53,6 +57,7 @@ To access admin panel, use URL of the following kind: http://product_installatio
 For example: http://webmail.domain.com/app/?admin
 
 Default login is `admin`, the password is the one you chose during installation. 
+
 ## :red_circle: Antifeatures
 
 - **Bad security reputation**: Has a bad security reputation, such as deprecated addons.
