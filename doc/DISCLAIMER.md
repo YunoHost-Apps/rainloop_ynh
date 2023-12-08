@@ -1,3 +1,7 @@
+## Rainloop is unmaintained ⚠️
+
+See https://github.com/RainLoop/rainloop-webmail/issues/2162
+
 ## Access to admin panel
 
 To access admin panel, use URL of the following kind: http://product_installation_URL/app/?admin
